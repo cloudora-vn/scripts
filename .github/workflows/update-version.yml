@@ -21,10 +21,15 @@ jobs:
         # Generate Unix timestamp (seconds since epoch)
         echo $(date +%s) > version.txt
         
-    - name: Commit and push version.txt
+    - name: Create scripts.tar.gz
+      run: |
+        # Create tar.gz archive from sh/ directory
+        tar -czf scripts.tar.gz sh/
+        
+    - name: Commit and push changes
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add version.txt
-        git diff --staged --quiet || git commit -m "Update version.txt with timestamp"
+        git add version.txt scripts.tar.gz
+        git diff --staged --quiet || git commit -m "Update version.txt and scripts.tar.gz"
         git push || true
