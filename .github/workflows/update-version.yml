@@ -1,0 +1,30 @@
+name: Update Version
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'sh/**'
+      - 'data.yaml'
+  workflow_dispatch:
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      
+    - name: Generate version.txt
+      run: |
+        # Generate Unix timestamp (seconds since epoch)
+        echo $(date +%s) > version.txt
+        
+    - name: Commit and push version.txt
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add version.txt
+        git diff --staged --quiet || git commit -m "Update version.txt with timestamp"
+        git push || true
